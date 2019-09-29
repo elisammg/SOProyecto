@@ -60,36 +60,13 @@ int writeFile (char str[])
 
  
 /*Conversión de texto a binario*/
-int text_to_bits[99999];
-int bits_size=0;
-
- 
-void Dec_to_Binary(int n, int nchars) 
-{ 
-    int binaryNum[1000]; 
-    int i = 0; 
-    while (n > 0) { 
-        binaryNum[i] = n % 2; 
-        n = n / 2; 
-        i++; 
-    } 
-    //char ch[nchars + 1];
-
-    for (int j = i - 1; j >= 0; j--) {
-		text_to_bits[bits_size++] = binaryNum[j]; 
-        cout << text_to_bits[j];
-        //ch[j] = text_to_bits[j];
-	}
-
-    //cout << ch;
-    //writeFile(ch);
-}
- 
-void convert_Text_to_bits(char *plain_text, int nchars){
-	for(int i=0;plain_text[i];i++){
-		int asci = plain_text[i];
-		int bin = Dec_to_Binary(asci, nchars);
-	}
+void printBinary(char c)
+{
+    for (int i = 7; i >= 0; --i) 
+    {
+        std::cout << ((c & (1 << i))? '1' : '0');
+    }
+    
 }
 /*finaliza conversión de texto a binario */
 
@@ -98,8 +75,23 @@ int main(void) {
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+    {
+	char arr[] = "Elisa";
 
-    convert_Text_to_bits(str, nchars);
+	std::string s(arr);
+	std::cout << s; 
+	std::cout << " ";
+
+for (int i = 0; i < s.size(); i += 2)
+{
+    printBinary(s[i]);
+    std::cout << " , ";
+    printBinary(s[i + 1]);
+    std::cout << " , ";
+}
+
+	return 0;
+}
 
     //LLamado de la función writeFile. 
     //writeFile(str);
