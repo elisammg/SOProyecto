@@ -12,6 +12,8 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 #include <string>
 #include <cstring>
 #include <fstream>
+#include<cmath>
+#include <bitset>
 
 using namespace std;
 
@@ -52,7 +54,26 @@ int writeFile (char str[])
   myfile.close();
   return 0;
 }
-/* Fin de segmento de código para creación de archivo .txt */ 
+/* Fin de segmento de código para creación de archivo .txt */
+
+//Initial permutation
+int initial_perm[64]=  
+    {    58,50,42,34,26,18,10,2, 
+        60,52,44,36,28,20,12,4, 
+        62,54,46,38,30,22,14,6, 
+        64,56,48,40,32,24,16,8, 
+        57,49,41,33,25,17,9,1, 
+        59,51,43,35,27,19,11,3, 
+        61,53,45,37,29,21,13,5, 
+        63,55,47,39,31,23,15,7 
+    }; 
+
+void convertToBinary(char str[]){
+    for (int i = 0; i < (int)strlen(str); i += 2) {
+        std::cout << std::bitset<8>(str[i]);
+        std::cout << std::bitset<8>(str[i + 1]);
+    }
+}
 
 int main(void) {
     int nchars = chPrompt(nchars);
@@ -60,7 +81,11 @@ int main(void) {
     strInput(str, nchars);
 
     //Troubleshooting
-    printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+    //printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+
+    for(int i = 0; i <= (int)strlen(str); i++){
+        str = convertToBinary(str[i]);
+    }
 
     //LLamado de la función writeFile. 
     writeFile(str);
@@ -68,5 +93,3 @@ int main(void) {
 
     return 0;
 }
-
-

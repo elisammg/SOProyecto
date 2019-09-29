@@ -1,3 +1,7 @@
+/*
+g++ decrypt.cpp -o decrypt
+*/
+
 #include <iostream>
 #include <fstream>
 
