@@ -15,7 +15,6 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 #include <cmath>
 #include <bitset>
 #include <atomic>
-#include <bits/stdc++.h> 
 
 using namespace std;
 
@@ -48,7 +47,7 @@ int chPrompt(int nchars) {
 /* Fin de segmento de código para obtener mensaje por teclado con getchar() */
 
 /* Segmento de código para crear un archivo .txt con el mensaje encriptado para ser decriptado más adelante. */
-int writeFile (char str[]) 
+int writeFile (string str) 
 {
   ofstream myfile;
   myfile.open ("encrypted_message.txt", ios :: out | ios :: binary);
@@ -58,40 +57,15 @@ int writeFile (char str[])
 }
 /* Fin de segmento de código para creación de archivo .txt */
 
- 
-/*Conversión de texto a binario*/
-int text_to_bits[99999];
-int bits_size=0;
+int text_to_bits[99999], bits_size=0;
 
- 
-int Dec_to_Binary(int n) 
-{ 
-    int binaryNum[1000]; 
-    int i = 0; 
-    while (n > 0) { 
-        binaryNum[i] = n % 2; 
-        n = n / 2; 
-        i++; 
-    } 
-
-    char ch;
-
-    for (int j = i - 1; j >= 0; j--) {
-		text_to_bits[bits_size++] = binaryNum[j]; 
-        //cout << text_to_bits[j];
-	}
-    return ch;
+void printBinary(char c) {
+    for (int i = 7; i >= 0; --i) {
+        std::cout << ((c & (1 << i))? '1' : '0');
+        text_to_bits[] = ((c & (1 << i))? '1' : '0');
+    }
+    cout << text_to_bits;
 }
- 
-void convert_Text_to_ascii(char *plain_text){
-	for(int i=0;plain_text[i];i++){
-		int ascii = plain_text[i];
-        cout << ascii;
-		int bin = Dec_to_Binary(ascii);
-        //cout << bin;
-	}
-}
-/*finaliza conversión de texto a binario */
 
 int main(void) {
     int nchars = chPrompt(nchars);
@@ -99,11 +73,22 @@ int main(void) {
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
 
-    convert_Text_to_ascii(str);
+    
+    std::string s(str);
+	std::cout << s; 
+	std::cout << std::endl;
+    std::string temp;
+
+    for (int i = 0; i < s.size(); i += 2){
+        printBinary(s[i]);
+        std::cout << " ";
+        printBinary(s[i + 1]);
+        std::cout << " ";
+    }
 
     //LLamado de la función writeFile. 
-    //writeFile(str);
-    //printf("El archivo ha sido creado con éxito.\n");
+    writeFile(temp);
+    printf("\nEl archivo ha sido creado con éxito.\n");
 
     return 0;
 }
