@@ -15,6 +15,7 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 #include <cmath>
 #include <bitset>
 #include <atomic>
+#include <bits/stdc++.h> 
 
 using namespace std;
 
@@ -58,7 +59,7 @@ int writeFile (char str[])
 /* Fin de segmento de código para creación de archivo .txt */
 
  
-
+/*Conversión de texto a binario*/
 int text_to_bits[99999];
 int bits_size=0;
 
@@ -72,25 +73,25 @@ void Dec_to_Binary(int n, int nchars)
         n = n / 2; 
         i++; 
     } 
-
-    char ch[nchars + 1];
+    //char ch[nchars + 1];
 
     for (int j = i - 1; j >= 0; j--) {
 		text_to_bits[bits_size++] = binaryNum[j]; 
-        //cout << text_to_bits[j];
-        ch[j] = text_to_bits[j];
+        cout << text_to_bits[j];
+        //ch[j] = text_to_bits[j];
 	}
 
-    cout << ch;
-    writeFile(ch);
+    //cout << ch;
+    //writeFile(ch);
 }
  
 void convert_Text_to_bits(char *plain_text, int nchars){
 	for(int i=0;plain_text[i];i++){
 		int asci = plain_text[i];
-		Dec_to_Binary(asci, nchars);
+		int bin = Dec_to_Binary(asci, nchars);
 	}
 }
+/*finaliza conversión de texto a binario */
 
 int main(void) {
     int nchars = chPrompt(nchars);
