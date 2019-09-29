@@ -63,7 +63,7 @@ int text_to_bits[99999];
 int bits_size=0;
 
  
-void Dec_to_Binary(int n, int nchars) 
+int Dec_to_Binary(int n) 
 { 
     int binaryNum[1000]; 
     int i = 0; 
@@ -73,22 +73,21 @@ void Dec_to_Binary(int n, int nchars)
         i++; 
     } 
 
-    char ch[nchars + 1];
+    char ch;
 
     for (int j = i - 1; j >= 0; j--) {
 		text_to_bits[bits_size++] = binaryNum[j]; 
         //cout << text_to_bits[j];
-        ch[j] = text_to_bits[j];
 	}
-
-    cout << ch;
-    writeFile(ch);
+    return ch;
 }
  
-void convert_Text_to_bits(char *plain_text, int nchars){
+void convert_Text_to_ascii(char *plain_text){
 	for(int i=0;plain_text[i];i++){
-		int asci = plain_text[i];
-		Dec_to_Binary(asci, nchars);
+		int ascii = plain_text[i];
+        cout << ascii;
+		int bin = Dec_to_Binary(ascii);
+        //cout << bin;
 	}
 }
 
@@ -98,7 +97,7 @@ int main(void) {
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
 
-    convert_Text_to_bits(str, nchars);
+    convert_Text_to_ascii(str);
 
     //LLamado de la función writeFile. 
     //writeFile(str);
