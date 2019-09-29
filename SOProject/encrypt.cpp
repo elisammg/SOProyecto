@@ -15,7 +15,6 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 #include <cmath>
 #include <bitset>
 #include <atomic>
-#include <bits/stdc++.h> 
 
 using namespace std;
 
@@ -48,7 +47,7 @@ int chPrompt(int nchars) {
 /* Fin de segmento de código para obtener mensaje por teclado con getchar() */
 
 /* Segmento de código para crear un archivo .txt con el mensaje encriptado para ser decriptado más adelante. */
-int writeFile (char str[]) 
+int writeFile (string str) 
 {
   ofstream myfile;
   myfile.open ("encrypted_message.txt", ios :: out | ios :: binary);
@@ -68,7 +67,6 @@ void printBinary(char c)
     }
     
 }
-/*finaliza conversión de texto a binario */
 
 int main(void) {
     int nchars = chPrompt(nchars);
@@ -90,12 +88,22 @@ for (int i = 0; i < s.size(); i += 2)
     std::cout << " , ";
 }
 
-	return 0;
-}
+    
+    std::string s(str);
+	std::cout << s; 
+	std::cout << std::endl;
+    std::string temp;
+
+    for (int i = 0; i < s.size(); i += 2){
+        printBinary(s[i]);
+        std::cout << " ";
+        printBinary(s[i + 1]);
+        std::cout << " ";
+    }
 
     //LLamado de la función writeFile. 
-    //writeFile(str);
-    //printf("El archivo ha sido creado con éxito.\n");
+    writeFile(temp);
+    printf("\nEl archivo ha sido creado con éxito.\n");
 
     return 0;
 }
