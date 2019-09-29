@@ -61,8 +61,8 @@ int text_to_bits[99999], bits_size=0;
 
 void printBinary(char c) {
     for (int i = 7; i >= 0; --i) {
-        std::cout << ((c & (1 << i))? '1' : '0');
-        text_to_bits[] = ((c & (1 << i))? '1' : '0');
+        //std::cout << ((c & (1 << i))? '1' : '0');
+        text_to_bits[i] = ((c & (1 << i))? '1' : '0');
     }
     cout << text_to_bits;
 }
