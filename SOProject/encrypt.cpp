@@ -3,6 +3,8 @@ Programa de encripción con algoritmo DES utilizando variables mutex.
 Alumnos:
     Kevin Champney
     Elisa Monzón
+
+Comando de compilación: g++ encrypt.cpp -o encrypt
 */
 #include <iostream>
 #include <stdlib.h>
