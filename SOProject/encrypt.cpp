@@ -49,7 +49,7 @@ int chPrompt(int nchars) {
 int writeFile (char str[]) 
 {
   ofstream myfile;
-  myfile.open ("encrypted_message.txt");
+  myfile.open ("encrypted_message.txt", ios :: out | ios :: binary);
   myfile << str;
   myfile.close();
   return 0;
@@ -68,11 +68,27 @@ int initial_perm[64]=
         63,55,47,39,31,23,15,7 
     }; 
 
-void convertToBinary(char str[]){
-    for (int i = 0; i < (int)strlen(str); i += 2) {
-        std::cout << std::bitset<8>(str[i]);
-        std::cout << std::bitset<8>(str[i + 1]);
-    }
+int text_to_bits[99999], bits_size=0;
+
+void Dec_to_Binary(int n) 
+{ 
+    int binaryNum[1000]; 
+    int i = 0; 
+    while (n > 0) { 
+        binaryNum[i] = n % 2; 
+        n = n / 2; 
+        i++; 
+    } 
+    for (int j = i - 1; j >= 0; j--) {
+			text_to_bits[bits_size++] = binaryNum[j]; 
+	}
+} 
+
+void convert_Text_to_bits(char *plain_text){
+	for(int i=0;plain_text[i];i++){
+		int asci = plain_text[i];
+		Dec_to_Binary(asci);
+	}
 }
 
 int main(void) {
@@ -80,12 +96,10 @@ int main(void) {
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
 
-    //Troubleshooting
-    //printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+    //convert_Text_to_bits(str);
 
-    for(int i = 0; i <= (int)strlen(str); i++){
-        str = convertToBinary(str[i]);
-    }
+    //Troubleshooting
+    printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
 
     //LLamado de la función writeFile. 
     writeFile(str);
