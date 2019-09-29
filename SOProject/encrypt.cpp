@@ -57,14 +57,15 @@ int writeFile (string str)
 }
 /* Fin de segmento de código para creación de archivo .txt */
 
-int text_to_bits[99999], bits_size=0;
-
-void printBinary(char c) {
-    for (int i = 7; i >= 0; --i) {
-        //std::cout << ((c & (1 << i))? '1' : '0');
-        text_to_bits[i] = ((c & (1 << i))? '1' : '0');
+ 
+/*Conversión de texto a binario*/
+void printBinary(char c)
+{
+    for (int i = 7; i >= 0; --i) 
+    {
+        std::cout << ((c & (1 << i))? '1' : '0');
     }
-    cout << text_to_bits;
+    
 }
 
 int main(void) {
@@ -72,6 +73,20 @@ int main(void) {
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+    {
+	char arr[] = "Elisa";
+
+	std::string s(arr);
+	std::cout << s; 
+	std::cout << " ";
+
+for (int i = 0; i < s.size(); i += 2)
+{
+    printBinary(s[i]);
+    std::cout << " , ";
+    printBinary(s[i + 1]);
+    std::cout << " , ";
+}
 
     
     std::string s(str);
