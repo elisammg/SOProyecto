@@ -21,7 +21,7 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 using namespace std;
 
 //Defincion de variables: hilos, variable mutex
-#define NUM_THREADS 5
+#define NUM_THREADS 16
 pthread_mutex_t lock;
 
 /* Segmento de código para obtener mensaje por teclado con getchar() */
@@ -62,8 +62,8 @@ int writeFile (string str)
   return 0;
 }
 /* Fin de segmento de código para creación de archivo .txt */
-
-int Iintial_Permutation [64] = {
+//Primera tabla de permutacion
+int Intial_Permutation [64] = {
 	  58, 50, 42, 34, 26, 18, 10, 2,
 	  60, 52, 44, 36, 28, 20, 12, 4,
 	  62, 54, 46, 38, 30, 22, 14, 6,
@@ -73,14 +73,15 @@ int Iintial_Permutation [64] = {
 	  61, 53, 45, 37, 29, 21, 13, 5,
 	  63, 55, 47, 39, 31, 23, 15, 7
 };
-
+//Division de texto en L y R
 int Left32[17][32], Right32[17][32];
-
-void round1 (int plain_bits [])
+//Rondas
+void Rondas (int plain_bits [])
 {
+    //Primera ronda
 	int IP_result [64] , index=0;
 	for (int i = 0; i < 64; i++) {
-		IP_result [i] = plain_bits[ Iintial_Permutation[i] ];
+		IP_result [i] = plain_bits[ Intial_Permutation[i] ];
 	}
 	for (int i = 0; i < 32; i++)
 		Left32[0][i] = IP_result[i];
@@ -112,11 +113,7 @@ int main(void) {
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
-<<<<<<< HEAD
-	    
-=======
     
->>>>>>> kevin
     std::string s(str);
 	std::cout << s; 
 	std::cout << std::endl;
@@ -140,7 +137,7 @@ int main(void) {
    
    for( i = 0; i < NUM_THREADS; i++ ) {
       cout << "main() : creating thread, " << i << endl;
-      rc = pthread_create(&threads[i], NULL, PrintSqrt, (void *)i);
+      rc = pthread_create(&threads[i], NULL, Rondas, (void *)i);
       
       if (rc) {
          cout << "Error:unable to create thread," << rc << endl;
