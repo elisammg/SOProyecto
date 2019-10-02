@@ -1,5 +1,11 @@
+
 /*
-g++ decrypt.cpp -o decrypt
+Programa de desencriptación con algoritmo DES utilizando variables mutex.
+Alumnos:
+    Kevin Champney
+    Elisa Monzón
+
+Comando de compilación: g++ decrypt.cpp -o decrypt
 */
 
 #include <iostream>

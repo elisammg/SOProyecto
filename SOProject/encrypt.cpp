@@ -1,5 +1,5 @@
 /*
-Programa de encripción con algoritmo DES utilizando variables mutex.
+Programa de encriptación con algoritmo DES utilizando variables mutex.
 Alumnos:
     Kevin Champney
     Elisa Monzón
@@ -7,6 +7,8 @@ Alumnos:
 Comando de compilación: g++ encrypt.cpp -o encrypt
 */
 #include <iostream>
+#include <pthread.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
@@ -17,6 +19,10 @@ Comando de compilación: g++ encrypt.cpp -o encrypt
 #include <atomic>
 
 using namespace std;
+
+//Defincion de variables: hilos, variable mutex
+#define NUM_THREADS 5
+pthread_mutex_t lock;
 
 /* Segmento de código para obtener mensaje por teclado con getchar() */
 /* Código tomado de Stack Overflow */
@@ -91,4 +97,20 @@ int main(void) {
     printf("\nEl archivo ha sido creado con éxito.\n");
 
     return 0;
+
+    //Creación de hilos 
+    pthread_t threads[NUM_THREADS];
+   int rc;
+   int i;
+   
+   for( i = 0; i < NUM_THREADS; i++ ) {
+      cout << "main() : creating thread, " << i << endl;
+      rc = pthread_create(&threads[i], NULL, PrintSqrt, (void *)i);
+      
+      if (rc) {
+         cout << "Error:unable to create thread," << rc << endl;
+         exit(-1);
+      }
+   }
+   pthread_exit(NULL);
 }
