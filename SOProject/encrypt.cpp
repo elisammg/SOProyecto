@@ -73,22 +73,7 @@ int main(void) {
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
-    {
-	char arr[] = "Elisa";
-
-	std::string s(arr);
-	std::cout << s; 
-	std::cout << " ";
-
-for (int i = 0; i < s.size(); i += 2)
-{
-    printBinary(s[i]);
-    std::cout << " , ";
-    printBinary(s[i + 1]);
-    std::cout << " , ";
-}
-
-    
+	    
     std::string s(str);
 	std::cout << s; 
 	std::cout << std::endl;
