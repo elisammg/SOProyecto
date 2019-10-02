@@ -145,4 +145,6 @@ int main(void) {
       }
    }
    pthread_exit(NULL);
+//inicializar mutex
+   pthread_mutex_init(&lock, NULL)
 }

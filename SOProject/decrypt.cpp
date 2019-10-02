@@ -16,6 +16,13 @@ Comando de compilación: g++ decrypt.cpp -o decrypt
 #include <fstream>
 #include <cmath>
 #include <bitset>
+#include <pthread.h>
+#include <unistd.h>
+
+#define NUM_THREADS 16 //hilos
+int in, out, cont, buffer[8]; 				//declaración de variables globales: buffer contiene 8"espacios/localidades"
+pthread_cond_t lleno, vacio; 				//objetos condicionales
+pthread_mutex_t lock; 						//objetos mutex
 
 int main() {
    std::ifstream file("encrypted_message.txt");
@@ -32,4 +39,20 @@ int main() {
 
    std::cout << ch << std::endl;
    return 0;
+
+   //Creación de hilos 
+    pthread_t threads[NUM_THREADS];
+   int rc;
+   int i;
+   
+   for( i = 0; i < NUM_THREADS; i++ ) {
+      cout << "main() : creating thread, " << i << endl;
+      rc = pthread_create(&threads[i], NULL, Rondas, (void *)i);
+      
+      if (rc) {
+         cout << "Error:unable to create thread," << rc << endl;
+         exit(-1);
+      }
+   }
+   pthread_exit(NULL);
 }
