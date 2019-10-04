@@ -397,7 +397,7 @@ void Des::inverse()
 
 char * Des::Encrypt(char *Text1)
 {
-    cout << "Encrypt is active" << endl;
+    //cout << "Encrypt is active" << endl;
 
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
@@ -461,7 +461,7 @@ char * Des::Encrypt(char *Text1)
 }
 char * Des::Decrypt(char *Text1)
 {
-    cout << "Decrypt opening" << endl;
+    //cout << "Decrypt opening" << endl;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
     unsigned char ch;
@@ -524,7 +524,7 @@ char * Des::Decrypt(char *Text1)
     for(i=0,j=strlen(Text); i<strlen(Text); i++,j++)
         final1[i]=final[j];
     final1[i]='\0';
-    cout << "Decrypt ending" << endl;
+    //cout << "Decrypt ending" << endl;
     return(final);    
 }
 
@@ -533,6 +533,7 @@ char * Des::Decrypt(char *Text1)
 void strInput(char str[], int nchars) {
     int i = 0;
     int ch;
+    printf("Write your text:\n");
     while((ch = getchar()) != '\n' && ch != EOF ) {
         if (i < nchars) {
         str[i++] = ch;
@@ -543,6 +544,7 @@ void strInput(char str[], int nchars) {
 
 int chPrompt(int nchars) {
     printf("How many chars do you need to input? > ");
+    //cout<<"Enter a text: ";
     if (scanf("%i", &nchars) != 1) {
         printf("Unable to read #\n"); 
         exit(-1);
@@ -561,7 +563,6 @@ int main()
     Des d1,d2;
     //char *str=new char[1000];
     char *str1=new char[1000];
-    cout<<"Enter a text: ";
     //cin >> str;
 
     int nchars = chPrompt(nchars);
@@ -569,15 +570,15 @@ int main()
     strInput(str, nchars);
     
     str1=d1.Encrypt(str);
-    cout<<"\ni/p Text: "<<str<<endl;
-    cout<<"\nCypher  : "<<str1<<endl;
-    //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
-    cout<<"\no/p Text: "<<d2.Decrypt(str1)<<endl;
+    cout<<"\nWritten text: "<<str<<endl;
+    cout<<"\nEncrypted text is: "<<str1<<endl;
+    //ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
+    cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
 }
 
 void Des::keygen()
 {
-    cout << "KeyGen opening" << endl;
+    //cout << "KeyGen opening" << endl;
     
     PermChoice1();
 
@@ -616,5 +617,5 @@ void Des::keygen()
             keyi[round-1][i]=z[i];
     }
 
-    cout << "KeyGen ending" << endl;
+    //cout << "KeyGen ending" << endl;
 }
