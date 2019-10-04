@@ -397,6 +397,8 @@ void Des::inverse()
 
 char * Des::Encrypt(char *Text1)
 {
+    cout << "Encrypt is active" << endl;
+
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
     strcpy(Text,Text1);
@@ -459,6 +461,7 @@ char * Des::Encrypt(char *Text1)
 }
 char * Des::Decrypt(char *Text1)
 {
+    cout << "Decrypt opening" << endl;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
     unsigned char ch;
@@ -466,6 +469,7 @@ char * Des::Decrypt(char *Text1)
     i=strlen(Text);
     keygen();
     int mc=0;
+    
     for(iB=0,nB=0,m=0; m<(strlen(Text)/8); m++) //Repeat for TextLenth/8 times.
     {
         for(iB=0,i=0; i<8; i++,nB++)
@@ -520,7 +524,8 @@ char * Des::Decrypt(char *Text1)
     for(i=0,j=strlen(Text); i<strlen(Text); i++,j++)
         final1[i]=final[j];
     final1[i]='\0';
-    return(final);
+    cout << "Decrypt ending" << endl;
+    return(final);    
 }
 
 /* Segmento de código para obtener mensaje por teclado con getchar() */
@@ -572,6 +577,8 @@ int main()
 
 void Des::keygen()
 {
+    cout << "KeyGen opening" << endl;
+    
     PermChoice1();
 
     int i,j,k=0;
@@ -608,4 +615,6 @@ void Des::keygen()
         for(i=0; i<48; i++)
             keyi[round-1][i]=z[i];
     }
+
+    cout << "KeyGen ending" << endl;
 }
