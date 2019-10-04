@@ -3,7 +3,11 @@
 # include <string.h>
 # include <iostream>
 # include <stdlib.h>
+# include <pthread.h>
 using namespace std;
+pthread_t tid[2];
+int counter;
+pthread_mutex_t lock;
 
 int key[64]=
 {
@@ -48,18 +52,21 @@ public:
     void substitution();
     void permutation();
     void keygen();
-    char * Encrypt(char *);
+   void * Encrypt(void *);
     char * Decrypt(char *);
 };
 void Des::IP() //Initial Permutation
 {
+    //mutex
+pthread_mutex_lock(&lock); 
     int k=58,i;
     for(i=0; i<32; i++)
     {
         ip[i]=total[k-1];
         if(k-8>0)  k=k-8;
         else       k=k+58;
-    }
+    }    
+pthread_mutex_unlock(&lock); 
     k=57;
     for( i=32; i<64; i++)
     {
@@ -395,13 +402,14 @@ void Des::inverse()
     }
 }
 
-char * Des::Encrypt(char *Text1)
+void * Des::Encrypt(void *Text1)
 {
     cout << "Encrypt is active" << endl;
-
+    //cast void - char
+    char *temp = (char *)Text1;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
-    strcpy(Text,Text1);
+    strcpy(Text,temp);
     i=strlen(Text);
     int mc=0;
     a1=i%8;
@@ -559,6 +567,8 @@ int chPrompt(int nchars) {
 int main()
 {
     Des d1,d2;
+    int i = 0;
+    int err;
     //char *str=new char[1000];
     char *str1=new char[1000];
     cout<<"Enter a text: ";
@@ -573,6 +583,23 @@ int main()
     cout<<"\nCypher  : "<<str1<<endl;
     //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
     cout<<"\no/p Text: "<<d2.Decrypt(str1)<<endl;
+    if (pthread_mutex_init(&lock, NULL) != 0) 						//inicializacion de mutex no completada
+    {
+        printf("\n mutex init failed\n");
+        return 1;
+    }
+    for(i = 0; i<=1; i++)													//se crean solo 2 hilos
+    {
+       err = pthread_create(&(tid[i]), NULL, &Des::Encrypt, (void *) str); 	//creacion de hilos 
+       // if (err != 0)
+         //   printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
+       // i++;
+    }
+
+    pthread_join(tid[0], NULL);
+    pthread_join(tid[1], NULL);
+    pthread_mutex_destroy(&lock);									//destruccion de mutex dinamica ya usada
+
 }
 
 void Des::keygen()
@@ -615,6 +642,6 @@ void Des::keygen()
         for(i=0; i<48; i++)
             keyi[round-1][i]=z[i];
     }
-
+}
    
    
