@@ -616,31 +616,5 @@ void Des::keygen()
             keyi[round-1][i]=z[i];
     }
 
-<<<<<<< HEAD
-    //LLamado de la función writeFile. 
-    writeFile(str);
-    printf("\nEl archivo ha sido creado con éxito.\n");
-
-    return 0;
-
-    //Creación de hilos 
-    pthread_t threads[NUM_THREADS];
-   int rc;
-   int i;
    
-   for( i = 0; i < NUM_THREADS; i++ ) {
-      cout << "main() : creating thread, " << i << endl;
-      rc = pthread_create(&threads[i], NULL, Rondas, (void *)i);
-      
-      if (rc) {
-         cout << "Error:unable to create thread," << rc << endl;
-         exit(-1);
-      }
-   }
-   pthread_exit(NULL);
-//inicializar mutex
-   pthread_mutex_init(&lock, NULL);
-=======
-    cout << "KeyGen ending" << endl;
->>>>>>> kevin
-}
+   
