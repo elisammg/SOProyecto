@@ -568,10 +568,10 @@ void * callEncryptDecrypt(void *str){
 
     str1=d1.Encrypt(encrypted.c_str());
 
-    cout<<"\nWritten text: "<<encrypted<<endl;
-    cout<<"\nEncrypted text is: "<<str1<<endl;
+    cout<<"\nWritten text:\n"<<encrypted<<endl;
+    cout<<"\nEncrypted text is:\n"<<str1<<endl;
     //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
-    cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
+    cout<<"\nThe text after being decrypted:\n"<<d2.Decrypt(str1)<<endl;
 
 }
 
