@@ -11,6 +11,7 @@ using namespace std;
 pthread_t tid[2];
 int counter;
 pthread_mutex_t lock;
+pthread_cond_t cond;
 
 /* Segmento de código para obtener mensaje por teclado con getchar() */
 /* Código tomado de Stack Overflow */
@@ -490,8 +491,8 @@ char * Des::Encrypt(const char *Text1)
             k=128;
             d=0;
         }
-    }
-    pthread_mutex_unlock(&lock); //for loop ends here
+    }//for loop ends here
+    pthread_mutex_unlock(&lock); 
     final[mc]='\0';
     return(final);
 }
@@ -504,6 +505,8 @@ char * Des::Decrypt(char *Text1)
     i=strlen(Text);
     keygen();
     int mc=0;
+    //mutex
+    pthread_mutex_lock(&lock);
     for(iB=0,nB=0,m=0; m<(strlen(Text)/8); m++) //Repeat for TextLenth/8 times.
     {
         for(iB=0,i=0; i<8; i++,nB++)
@@ -553,6 +556,7 @@ char * Des::Decrypt(char *Text1)
             d=0;
         }
     } //for loop ends here
+    pthread_mutex_unlock(&lock);
     final[mc]='\0';
     char *final1=new char[1000];
     for(i=0,j=strlen(Text); i<strlen(Text); i++,j++)
@@ -563,20 +567,20 @@ char * Des::Decrypt(char *Text1)
 
 //Subrutina que llama a la función Encrypt.
 void * callEncryptDecrypt(void *str){
-    
+    //Casting de puntero a string.
     std::string encrypted = *reinterpret_cast<std::string*>(str);
 
-    Des d1, d2;
+    //Varibles a utilizar por Encrypt y Decrypt.
+    Des d1, d2;//   ->  	Variables Des
+    char *str1=new char[1000];//    ->      Variable para almacenar el mensaje encriptado.
 
-    char *str1=new char[1000];
+    //Llamado de la función Encrypt para encriptar mensaje y almacenar el variable tipo char*
+    str1=d1.Encrypt(encrypted.c_str());//   ->      encrypted.c_str() = Casting de string a char*
 
-    str1=d1.Encrypt(encrypted.c_str());
-
-    cout<<"\nWritten text:\n"<<encrypted<<endl;
-    cout<<"\nEncrypted text is:\n"<<str1<<endl;
-    //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
-    cout<<"\nThe text after being decrypted:\n"<<d2.Decrypt(str1)<<endl;
-
+    cout<<"\nTexto escrito por usuario:\n"<<encrypted<<endl;
+    cout<<"\nTexto encriptado por máquina:\n"<<str1<<endl;
+    //ofstream fout("encryptedMessage.txt"); fout<<str1; fout.close();
+    cout<<"\nThe text after being decrypted:\n"<<d2.Decrypt(str1)<<endl;//      ->      LLamado de la función Decrypt para ser impreso en consola.
 }
 
 int main()
@@ -588,14 +592,18 @@ int main()
     //Troubleshooting
     printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
 
+    //Casting de char* a string.
     std::string s = str;
 
     //Llamado de la subrutina.
     int err = pthread_create(&(tid[0]), NULL, &callEncryptDecrypt, (void *)&s);
+    //cout << "El programa a terminado de decriptar el texto." << endl;
     pthread_join(tid[0], NULL);
+    cout << "\nEl programa ha finalizado.\n" << endl;
 
-    //variables mutex
+    //variables mutex y condicionales
     pthread_mutex_init(&lock, NULL);
+    pthread_cond_init(&cond, NULL);
 }
 
 void Des::keygen()
