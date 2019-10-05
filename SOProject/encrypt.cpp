@@ -61,7 +61,7 @@ public:
     void substitution();
     void permutation();
     void keygen();
-   void * Encrypt(void *);
+    void * Encrypt(void *);
     char * Decrypt(char *);
 };
 void Des::IP() //Initial Permutation
