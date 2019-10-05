@@ -5,11 +5,14 @@
 # include <stdlib.h>
 # include <pthread.h>
 
+
 using namespace std;
 
 pthread_t tid[2];
 int counter;
 pthread_mutex_t lock;
+
+//atomic<int> res;
 
 struct thread_data{
     char struct_str;
@@ -416,10 +419,12 @@ void * Des::Encrypt(void *Text1)
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
 
-    struct parameters *ps;
-	ps=(struct parameters *)Text1;
+    struct thread_data *datos_func;
+	datos_func=(struct thread_data *)Text1;
+    char* valor = new char;
+    *valor = *((char*)(void*)&datos_func->struct_str);
 
-    strcpy(Text,ps);
+    strcpy(Text,valor);
     i=strlen(Text);
     int mc=0;
     a1=i%8;
