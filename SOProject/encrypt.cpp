@@ -15,7 +15,7 @@ pthread_mutex_t lock;
 //atomic<int> res;
 
 struct thread_data{
-    char struct_str;
+    char struct_str[9999];
 };
 
 int key[64]=
@@ -413,7 +413,7 @@ void Des::inverse()
 
 void * Des::Encrypt(void *Text1)
 {
-    cout << "Encrypt is active" << endl;
+    //cout << "Encrypt is active" << endl;
     //cast void - char
     //char *temp = (char *)Text1;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
@@ -425,6 +425,7 @@ void * Des::Encrypt(void *Text1)
     *valor = *((char*)(void*)&datos_func->struct_str);
 
     strcpy(Text,valor);
+    cout << Text <<endl;
     i=strlen(Text);
     int mc=0;
     a1=i%8;
@@ -611,7 +612,7 @@ int main()
     }
     for(i = 0; i<=1; i++)													//se crean solo 2 hilos
     {
-       casting.struct_str = *str;
+       casting.struct_str[i] = str[i];
        err = pthread_create(&(tid[i]), NULL, &Des::Encrypt, (void *) &casting); 	//creacion de hilos 
        // if (err != 0)
          //   printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
