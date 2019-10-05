@@ -4,19 +4,41 @@
 # include <iostream>
 # include <stdlib.h>
 # include <pthread.h>
-
-
+#include <cstring>
+#include <string>
 using namespace std;
 
 pthread_t tid[2];
 int counter;
 pthread_mutex_t lock;
 
-//atomic<int> res;
+/* Segmento de código para obtener mensaje por teclado con getchar() */
+/* Código tomado de Stack Overflow */
+void strInput(char str[], int nchars) {
+    int i = 0;
+    int ch;
+    while((ch = getchar()) != '\n' && ch != EOF ) {
+        if (i < nchars) {
+        str[i++] = ch;
+        }
+    }
+    str[i] = '\0';
+}
 
-struct thread_data{
-    char struct_str[9999];
-};
+int chPrompt(int nchars) {
+    printf("How many chars do you need to input? > ");
+    if (scanf("%i", &nchars) != 1) {
+        printf("Unable to read #\n"); 
+        exit(-1);
+    }
+
+    // Consume remaining text in the line
+    int ch;
+    while((ch = getchar()) != '\n' && ch != EOF );
+        
+    return nchars;
+}
+/* Fin de segmento de código para obtener mensaje por teclado con getchar() */
 
 int key[64]=
 {
@@ -61,21 +83,18 @@ public:
     void substitution();
     void permutation();
     void keygen();
-    void * Encrypt(void *);
+    char * Encrypt(const char *);
     char * Decrypt(char *);
 };
 void Des::IP() //Initial Permutation
 {
-    //mutex
-pthread_mutex_lock(&lock); 
     int k=58,i;
     for(i=0; i<32; i++)
     {
         ip[i]=total[k-1];
         if(k-8>0)  k=k-8;
         else       k=k+58;
-    }    
-pthread_mutex_unlock(&lock); 
+    }
     k=57;
     for( i=32; i<64; i++)
     {
@@ -411,21 +430,11 @@ void Des::inverse()
     }
 }
 
-void * Des::Encrypt(void *Text1)
+char * Des::Encrypt(const char *Text1)
 {
-    //cout << "Encrypt is active" << endl;
-    //cast void - char
-    //char *temp = (char *)Text1;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
-
-    struct thread_data *datos_func;
-	datos_func=(struct thread_data *)Text1;
-    char* valor = new char;
-    *valor = *((char*)(void*)&datos_func->struct_str);
-
-    strcpy(Text,valor);
-    cout << Text <<endl;
+    strcpy(Text,Text1);
     i=strlen(Text);
     int mc=0;
     a1=i%8;
@@ -485,19 +494,13 @@ void * Des::Encrypt(void *Text1)
 }
 char * Des::Decrypt(char *Text1)
 {
-    //cout << "Decrypt opening" << endl;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
     unsigned char ch;
-    
-    
-    
     strcpy(Text,Text1);
     i=strlen(Text);
     keygen();
     int mc=0;
-    
-    
     for(iB=0,nB=0,m=0; m<(strlen(Text)/8); m++) //Repeat for TextLenth/8 times.
     {
         for(iB=0,i=0; i<8; i++,nB++)
@@ -552,84 +555,44 @@ char * Des::Decrypt(char *Text1)
     for(i=0,j=strlen(Text); i<strlen(Text); i++,j++)
         final1[i]=final[j];
     final1[i]='\0';
-    //cout << "Decrypt ending" << endl;
-    //return(final);    
+    return(final);
 }
 
-/* Segmento de código para obtener mensaje por teclado con getchar() */
-/* Código tomado de Stack Overflow */
-void strInput(char str[], int nchars) {
-    int i = 0;
-    int ch;
-    printf("Write your text:\n");
-    while((ch = getchar()) != '\n' && ch != EOF ) {
-        if (i < nchars) {
-        str[i++] = ch;
-        }
-    }
-    str[i] = '\0';
-}
+//Subrutina que llama a la función Encrypt.
+void * callEncryptDecrypt(void *str){
+    
+    std::string encrypted = *reinterpret_cast<std::string*>(str);
 
-int chPrompt(int nchars) {
-    printf("How many chars do you need to input? > ");
-    //cout<<"Enter a text: ";
-    if (scanf("%i", &nchars) != 1) {
-        printf("Unable to read #\n"); 
-        exit(-1);
-    }
+    Des d1, d2;
+    char *str1=new char[1000];
 
-    // Consume remaining text in the line
-    int ch;
-    while((ch = getchar()) != '\n' && ch != EOF );
-        
-    return nchars;
+    str1=d1.Encrypt(encrypted.c_str());
+
+    cout<<"\nWritten text:\n"<<encrypted<<endl;
+    cout<<"\nEncrypted text is:\n"<<str1<<endl;
+    //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
+    cout<<"\nThe text after being decrypted:\n"<<d2.Decrypt(str1)<<endl;
+
 }
-/* Fin de segmento de código para obtener mensaje por teclado con getchar() */
 
 int main()
 {
-    Des d1,d2;
-    int i = 0;
-    int err;
-    //char *str=new char[1000];
-    char *str1=new char[1000];
-    //cin >> str;
-    struct thread_data casting;
-
     int nchars = chPrompt(nchars);
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
-    
-    //str1=d1.Encrypt(str);
-    cout<<"\nWritten text: "<<str<<endl;
-    cout<<"\nEncrypted text is: "<<str1<<endl;
-    //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
-    //cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
-    if (pthread_mutex_init(&lock, NULL) != 0) 						//inicializacion de mutex no completada
-    {
-        printf("\n mutex init failed\n");
-        return 1;
-    }
-    for(i = 0; i<=1; i++)													//se crean solo 2 hilos
-    {
-       casting.struct_str[i] = str[i];
-       err = pthread_create(&(tid[i]), NULL, &Des::Encrypt, (void *) &casting); 	//creacion de hilos 
-       // if (err != 0)
-         //   printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
-       // i++;
-    }
 
-    cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
+    //Troubleshooting
+    printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+
+    std::string s = str;
+
+    //Llamado de la subrutina.
+    int err = pthread_create(&(tid[0]), NULL, &callEncryptDecrypt, (void *)&s);
     pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
-    pthread_mutex_destroy(&lock);									//destruccion de mutex dinamica ya usada
-
 }
 
 void Des::keygen()
 {
-    //cout << "KeyGen opening" << endl;
-    
     PermChoice1();
 
     int i,j,k=0;
@@ -667,5 +630,3 @@ void Des::keygen()
             keyi[round-1][i]=z[i];
     }
 }
-   
-   
