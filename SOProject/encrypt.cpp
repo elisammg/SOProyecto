@@ -441,6 +441,8 @@ char * Des::Encrypt(const char *Text1)
     if(a1!=0) for(j=0; j<8-a1; j++,i++) Text[i]=' ';
     Text[i]='\0';
     keygen();
+    //mutex
+    pthread_mutex_lock(&lock);
     for(iB=0,nB=0,m=0; m<(strlen(Text)/8); m++) //Repeat for TextLenth/8 times.
     {
         for(iB=0,i=0; i<8; i++,nB++)
@@ -488,7 +490,8 @@ char * Des::Encrypt(const char *Text1)
             k=128;
             d=0;
         }
-    } //for loop ends here
+    }
+    pthread_mutex_unlock(&lock); //for loop ends here
     final[mc]='\0';
     return(final);
 }
@@ -564,6 +567,7 @@ void * callEncryptDecrypt(void *str){
     std::string encrypted = *reinterpret_cast<std::string*>(str);
 
     Des d1, d2;
+
     char *str1=new char[1000];
 
     str1=d1.Encrypt(encrypted.c_str());
@@ -589,6 +593,9 @@ int main()
     //Llamado de la subrutina.
     int err = pthread_create(&(tid[0]), NULL, &callEncryptDecrypt, (void *)&s);
     pthread_join(tid[0], NULL);
+
+    //variables mutex
+    pthread_mutex_init(&lock, NULL);
 }
 
 void Des::keygen()
