@@ -4,10 +4,19 @@
 # include <iostream>
 # include <stdlib.h>
 # include <pthread.h>
+
+
 using namespace std;
+
 pthread_t tid[2];
 int counter;
 pthread_mutex_t lock;
+
+//atomic<int> res;
+
+struct thread_data{
+    char struct_str[9999];
+};
 
 int key[64]=
 {
@@ -404,12 +413,19 @@ void Des::inverse()
 
 void * Des::Encrypt(void *Text1)
 {
-    cout << "Encrypt is active" << endl;
+    //cout << "Encrypt is active" << endl;
     //cast void - char
-    char *temp = (char *)Text1;
+    //char *temp = (char *)Text1;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
-    strcpy(Text,temp);
+
+    struct thread_data *datos_func;
+	datos_func=(struct thread_data *)Text1;
+    char* valor = new char;
+    *valor = *((char*)(void*)&datos_func->struct_str);
+
+    strcpy(Text,valor);
+    cout << Text <<endl;
     i=strlen(Text);
     int mc=0;
     a1=i%8;
@@ -469,14 +485,18 @@ void * Des::Encrypt(void *Text1)
 }
 char * Des::Decrypt(char *Text1)
 {
-    cout << "Decrypt opening" << endl;
+    //cout << "Decrypt opening" << endl;
     int i,a1,j,nB,m,iB,k,K,B[8],n,t,d,round;
     char *Text=new char[1000];
     unsigned char ch;
+    
+    
+    
     strcpy(Text,Text1);
     i=strlen(Text);
     keygen();
     int mc=0;
+    
     
     for(iB=0,nB=0,m=0; m<(strlen(Text)/8); m++) //Repeat for TextLenth/8 times.
     {
@@ -532,8 +552,8 @@ char * Des::Decrypt(char *Text1)
     for(i=0,j=strlen(Text); i<strlen(Text); i++,j++)
         final1[i]=final[j];
     final1[i]='\0';
-    cout << "Decrypt ending" << endl;
-    return(final);    
+    //cout << "Decrypt ending" << endl;
+    //return(final);    
 }
 
 /* Segmento de código para obtener mensaje por teclado con getchar() */
@@ -541,6 +561,7 @@ char * Des::Decrypt(char *Text1)
 void strInput(char str[], int nchars) {
     int i = 0;
     int ch;
+    printf("Write your text:\n");
     while((ch = getchar()) != '\n' && ch != EOF ) {
         if (i < nchars) {
         str[i++] = ch;
@@ -551,6 +572,7 @@ void strInput(char str[], int nchars) {
 
 int chPrompt(int nchars) {
     printf("How many chars do you need to input? > ");
+    //cout<<"Enter a text: ";
     if (scanf("%i", &nchars) != 1) {
         printf("Unable to read #\n"); 
         exit(-1);
@@ -571,18 +593,18 @@ int main()
     int err;
     //char *str=new char[1000];
     char *str1=new char[1000];
-    cout<<"Enter a text: ";
     //cin >> str;
+    struct thread_data casting;
 
     int nchars = chPrompt(nchars);
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
     
-    str1=d1.Encrypt(str);
-    cout<<"\ni/p Text: "<<str<<endl;
-    cout<<"\nCypher  : "<<str1<<endl;
+    //str1=d1.Encrypt(str);
+    cout<<"\nWritten text: "<<str<<endl;
+    cout<<"\nEncrypted text is: "<<str1<<endl;
     //  ofstream fout("out2_fil.txt"); fout<<str1; fout.close();
-    cout<<"\no/p Text: "<<d2.Decrypt(str1)<<endl;
+    //cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
     if (pthread_mutex_init(&lock, NULL) != 0) 						//inicializacion de mutex no completada
     {
         printf("\n mutex init failed\n");
@@ -590,12 +612,14 @@ int main()
     }
     for(i = 0; i<=1; i++)													//se crean solo 2 hilos
     {
-       err = pthread_create(&(tid[i]), NULL, &Des::Encrypt, (void *) str); 	//creacion de hilos 
+       casting.struct_str[i] = str[i];
+       err = pthread_create(&(tid[i]), NULL, &Des::Encrypt, (void *) &casting); 	//creacion de hilos 
        // if (err != 0)
          //   printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
        // i++;
     }
 
+    cout<<"\nThe text after being decrypted: "<<d2.Decrypt(str1)<<endl;
     pthread_join(tid[0], NULL);
     pthread_join(tid[1], NULL);
     pthread_mutex_destroy(&lock);									//destruccion de mutex dinamica ya usada
@@ -604,7 +628,7 @@ int main()
 
 void Des::keygen()
 {
-    cout << "KeyGen opening" << endl;
+    //cout << "KeyGen opening" << endl;
     
     PermChoice1();
 
