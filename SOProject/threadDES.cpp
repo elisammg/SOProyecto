@@ -18,7 +18,7 @@ pthread_cond_t cond;
 void strInput(char str[], int nchars) {
     int i = 0;
     int ch;
-    printf("\033[1;37mEscriba el texto que desea encriptar (mínimo 70 caracteres):\033[0m\n");
+    printf("\033[1;37mEscriba el texto que desea encriptar (mínimo %i caracteres):\033[0m\n", nchars);
     while((ch = getchar()) != '\n' && ch != EOF ) {
         if (i < nchars) {
         str[i++] = ch;
@@ -28,11 +28,11 @@ void strInput(char str[], int nchars) {
 }
 
 int chPrompt(int nchars) {
-    //printf("Cuantos caracteres desea escribir: ");
-    /*if (scanf("%i", &nchars) <= 70) {
+    printf("Cantidad mínima de caracteres que desea escribir: ");
+    if (scanf("%i", &nchars) != 1) {
         printf("Su texto debe ser mayor de 70 caracteres.\n"); 
         exit(-1);
-    }*/
+    }
 
     // Consume remaining text in the line
     int ch;
@@ -586,12 +586,12 @@ void * callEncryptDecrypt(void *str){
 
 int main()
 {
-    int nchars = 1000;
+    int nchars = chPrompt(nchars);
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
 
     //Troubleshooting
-    if(strlen(str) < 70){
+    if(strlen(str) < nchars){
         printf("Su mensaje contiene \033[1;31m%d\033[0m caracteres. Vuelva a intentarlo.\033[0m\n", (int) strlen(str));
         exit(-1);
     }else 
