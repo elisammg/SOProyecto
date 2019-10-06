@@ -18,6 +18,7 @@ pthread_cond_t cond;
 void strInput(char str[], int nchars) {
     int i = 0;
     int ch;
+    printf("\033[1;37mEscriba el texto que desea encriptar (mínimo 70 caracteres):\033[0m\n");
     while((ch = getchar()) != '\n' && ch != EOF ) {
         if (i < nchars) {
         str[i++] = ch;
@@ -27,11 +28,11 @@ void strInput(char str[], int nchars) {
 }
 
 int chPrompt(int nchars) {
-    printf("How many chars do you need to input? > ");
-    if (scanf("%i", &nchars) != 1) {
-        printf("Unable to read #\n"); 
+    //printf("Cuantos caracteres desea escribir: ");
+    /*if (scanf("%i", &nchars) <= 70) {
+        printf("Su texto debe ser mayor de 70 caracteres.\n"); 
         exit(-1);
-    }
+    }*/
 
     // Consume remaining text in the line
     int ch;
@@ -577,20 +578,24 @@ void * callEncryptDecrypt(void *str){
     //Llamado de la función Encrypt para encriptar mensaje y almacenar el variable tipo char*
     str1=d1.Encrypt(encrypted.c_str());//   ->      encrypted.c_str() = Casting de string a char*
 
-    cout<<"\nTexto escrito por usuario:\n"<<encrypted<<endl;
-    cout<<"\nTexto encriptado por máquina:\n"<<str1<<endl;
+    cout<<"\n\033[1;34mTexto escrito por usuario:\033[0m\n"<<encrypted<<endl;
+    cout<<"\n\033[1;34mTexto encriptado por máquina:\033[0m\n"<<str1<<endl;
     //ofstream fout("encryptedMessage.txt"); fout<<str1; fout.close();
-    cout<<"\nThe text after being decrypted:\n"<<d2.Decrypt(str1)<<endl;//      ->      LLamado de la función Decrypt para ser impreso en consola.
+    cout<<"\n\033[1;34mTexto decriptado por máquina:\033[0m\n"<<d2.Decrypt(str1)<<endl;//      ->      LLamado de la función Decrypt para ser impreso en consola.
 }
 
 int main()
 {
-    int nchars = chPrompt(nchars);
+    int nchars = 1000;
     char str[nchars + 1];  // + 1
     strInput(str, nchars);
 
     //Troubleshooting
-    printf("El mensaje escrito tiene %d caracteres\n", (int) strlen(str));
+    if(strlen(str) < 70){
+        printf("Su mensaje contiene \033[1;31m%d\033[0m caracteres. Vuelva a intentarlo.\033[0m\n", (int) strlen(str));
+        exit(-1);
+    }else 
+        printf("\nSu mensaje contiene \033[1;32m%d\033[0m caracteres. Encriptando mensaje...\033[0m\n", (int) strlen(str));
 
     //Casting de char* a string.
     std::string s = str;
@@ -599,7 +604,7 @@ int main()
     int err = pthread_create(&(tid[0]), NULL, &callEncryptDecrypt, (void *)&s);
     //cout << "El programa a terminado de decriptar el texto." << endl;
     pthread_join(tid[0], NULL);
-    cout << "\nEl programa ha finalizado.\n" << endl;
+    cout << "\n\033[1;32mEl programa ha finalizado exitosamente.\033[0m\n" << endl;
 
     //variables mutex y condicionales
     pthread_mutex_init(&lock, NULL);
@@ -645,4 +650,3 @@ void Des::keygen()
             keyi[round-1][i]=z[i];
     }
 }
-
